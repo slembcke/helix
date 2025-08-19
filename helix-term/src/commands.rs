@@ -4286,8 +4286,10 @@ pub mod insert {
             let continue_comment_token = continue_comment_tokens
                 .and_then(|tokens| comment::get_comment_token(text, tokens, current_line));
 
+            let line_slice = text.slice(line_start..pos);
             let (from, to, local_offs) = if let Some(idx) =
-                text.slice(line_start..pos).last_non_whitespace_char()
+                if config.trim_trailing_whitespace {line_slice.last_non_whitespace_char()}
+                else {Some(line_slice.len_chars())}
             {
                 let first_trailing_whitespace_char = (line_start + idx + 1).clamp(last_pos, pos);
                 last_pos = pos;
